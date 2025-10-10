@@ -1,5 +1,5 @@
 import prisma from "../../../../utils/prisma"
-import bcrypt from "bcrypt"
+import bcrypt from "bcryptjs"
 import {withSessionRoute} from "../../../../utils/ironSession"
 
 export default withSessionRoute(register)
