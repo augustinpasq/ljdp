@@ -4,7 +4,7 @@ const sessionOptions = {
     cookieName: "ljdp-session-cookie",
     password: process.env.COOKIE_PASSWORD,
     cookieOptions: {
-        secure: process.env.NODE_ENV === "production",
+        secure: false, // TODO: set to true on production when hosting with https will be used
     },
 }
 
