@@ -1,0 +1,54 @@
+networks:
+  ljdp-network:
+    driver: bridge
+    name: ljdp-network
+
+services:
+  app:
+    build: .
+    container_name: ljdp-app
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      COOKIE_PASSWORD: ${COOKIE_PASSWORD}
+      DATABASE_URL: ${DATABASE_URL}
+      NODE_ENV: production
+    image: ljdp
+    networks:
+      ljdp-network:
+        aliases:
+          - ljdp-app.local
+    ports:
+      - "80:3001"
+    volumes:
+      - ljdp-app:/app/public
+
+  db:
+    container_name: ljdp-db
+    environment:
+      MYSQL_DATABASE: ${DATABASE_NAME}
+      MYSQL_PASSWORD: ${DATABASE_PASSWORD}
+      MYSQL_USER: ${DATABASE_USER}
+      MYSQL_ROOT_PASSWORD: ${DATABASE_ROOT_PASSWORD}
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u${DATABASE_USER}", "-p${DATABASE_PASSWORD}" ]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    image: mysql:8.4.6
+    networks:
+      ljdp-network:
+        aliases:
+          - ljdp-db.local
+    ports:
+      - "3306:3306"
+    volumes:
+      - ljdp-db:/var/lib/mysql
+      - ./database/creationScript.sql:/docker-entrypoint-initdb.d/init.sql:ro
+
+volumes:
+  ljdp-app:
+    name: ljdp-app
+  ljdp-db:
+    name: ljdp-db
