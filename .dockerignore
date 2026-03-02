@@ -1,0 +1,11 @@
+.idea
+.git
+node_modules
+.next
+.env
+database
+logo
+README.md
+docker-compose.yaml
+Dockerfile
+docker-entrypoint.sh
