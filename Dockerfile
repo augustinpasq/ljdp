@@ -1,20 +1,32 @@
-FROM node:24
-
-RUN apt update && \
-    apt install -y graphicsmagick libpng-dev libjpeg-dev libwebp-dev && \
-    apt clean && \
-    rm -rf /var/lib/apt/lists/*
+FROM node:24-slim AS builder
 
 WORKDIR /app
 
 COPY package*.json ./
 RUN npm install
 
-COPY --chown=node:node . .
+COPY . .
+RUN npx prisma generate && npm run build
+
+FROM node:24-slim
+
+LABEL org.opencontainers.image.source=https://github.com/augustinpasq/ljdp
+
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends graphicsmagick openssl && \
+    rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/src ./src
+COPY --from=builder /app/utils ./utils
+COPY --from=builder /app/fonts ./fonts
+COPY --from=builder /app/package.json ./
+COPY --from=builder /app/next.config.js ./
 
 EXPOSE 3001
 
-COPY docker-entrypoint.sh /usr/local/bin/
-RUN chmod +x /usr/local/bin/docker-entrypoint.sh
-
-CMD ["docker-entrypoint.sh"]
+CMD ["node", "src/server.js"]

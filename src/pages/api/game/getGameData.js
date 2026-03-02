@@ -3,6 +3,29 @@ import {shuffle} from "shuffle-seed"
 
 export default async function getGameData(req, res) {
     try {
+        const allAnswers = await prisma.response.findMany({
+            select: {
+                Photo: {
+                    select: {
+                        Category: {
+                            select: {
+                                id: true
+                            }
+                        }
+                    }
+                }
+            },
+            where: {
+                Photo: {
+                    Category: {
+                        game: req.body.game
+                    }
+                }
+            }
+        })
+
+        const answeredCategoryIds = [...new Set(allAnswers.map(answer => answer.Photo.Category.id))]
+
         const categories = await prisma.category.findMany({
             select: {
                 title: true,
@@ -16,7 +39,10 @@ export default async function getGameData(req, res) {
                 }
             },
             where: {
-                game: req.body.game
+                game: req.body.game,
+                id: {
+                    notIn: answeredCategoryIds
+                }
             }
         })
 
