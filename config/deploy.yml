@@ -1,0 +1,45 @@
+accessories:
+  db:
+    env:
+      secret:
+        - MYSQL_DATABASE
+        - MYSQL_PASSWORD
+        - MYSQL_ROOT_PASSWORD
+        - MYSQL_USER
+    host: VPS_IP
+    image: ghcr.io/augustinpasq/ljdp-db
+    port: "127.0.0.1:3306:3306"
+    volumes:
+      - ljdp-db:/var/lib/mysql
+
+builder:
+  arch: arm64
+
+env:
+  secret:
+    - DATABASE_URL
+    - NODE_ENV
+    - COOKIE_PASSWORD
+
+image: ghcr.io/augustinpasq/ljdp-app
+
+proxy:
+  app_port: 3001
+  host: ljdp.fr
+  ssl: true
+
+registry:
+  password:
+    - KAMAL_REGISTRY_PASSWORD
+  server: ghcr.io
+  username: augustinpasq
+
+servers:
+  - VPS_IP
+
+service: ljdp
+
+ssh:
+  key_data:
+    - SSH_PRIVATE_KEY
+  user: augustin
