@@ -6,6 +6,6 @@ node_modules
 database
 logo
 README.md
-docker-compose.yaml
+docker-compose.yml
 Dockerfile
 docker-entrypoint.sh

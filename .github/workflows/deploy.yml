@@ -1,0 +1,121 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04-arm
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Login to GHCR
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+
+      - name: Build and push app
+        uses: docker/build-push-action@v7
+        env:
+          DOCKER_BUILD_SUMMARY: false
+        with:
+          context: .
+          push: true
+          tags: ghcr.io/augustinpasq/ljdp-app:latest
+
+      - name: Build and push db
+        uses: docker/build-push-action@v7
+        env:
+          DOCKER_BUILD_SUMMARY: false
+        with:
+          context: ./database
+          push: true
+          tags: ghcr.io/augustinpasq/ljdp-db:latest
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    outputs:
+      published: ${{ steps.release.outputs.published }}
+      version:   ${{ steps.release.outputs.version }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+
+      - name: Install semantic-release
+        run: |
+          npm install -g \
+            semantic-release \
+            @semantic-release/changelog \
+            @semantic-release/exec \
+            @semantic-release/git
+
+      - name: Run semantic-release
+        id: release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set +e
+          OUTPUT=$(npx semantic-release 2>&1)
+          EXIT_CODE=$?
+          set -e
+          echo "$OUTPUT"
+          VERSION=$(echo "$OUTPUT" | grep -oP 'Published release \K[0-9]+\.[0-9]+\.[0-9]+' || echo "")
+          if [ $EXIT_CODE -ne 0 ]; then
+            exit $EXIT_CODE
+          fi
+          if [ -n "$VERSION" ]; then
+            echo "published=true"   >> $GITHUB_OUTPUT
+            echo "version=$VERSION" >> $GITHUB_OUTPUT
+          else
+            echo "published=false"  >> $GITHUB_OUTPUT
+          fi
+
+  tag:
+    needs: release
+    if: needs.release.outputs.published == 'true'
+    runs-on: ubuntu-24.04-arm
+    steps:
+      - name: Login to GHCR
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Tag and push versioned images
+        run: |
+          VERSION="${{ needs.release.outputs.version }}"
+          for IMAGE in ljdp-app ljdp-db; do
+            FULL="ghcr.io/augustinpasq/${IMAGE}"
+            docker pull ${FULL}:latest
+            docker tag  ${FULL}:latest ${FULL}:${VERSION}
+            docker push ${FULL}:${VERSION}
+          done
+
+  deploy:
+    needs: tag
+    if: needs.release.outputs.published == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Dokploy deployment
+        run: curl -X POST "${{ secrets.DOKPLOY_WEBHOOK_URL }}"

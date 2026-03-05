@@ -42,4 +42,4 @@ Pour suivre l'avancée du projet, rendez-vous sur [la roadmap](https://github.co
 6. Lancer la commande ``npm run dev`` pour lancer le projet
 
 ## Auteurs
-- Augustin Pasquier [@augustin-pasq](https://github.com/augustin-pasq)
+- Augustin Pasquier [@augustinpasq](https://github.com/augustinpasq)
