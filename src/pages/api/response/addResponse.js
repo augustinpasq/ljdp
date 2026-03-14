@@ -52,7 +52,7 @@ async function addResponse(req, res) {
 
         res.status(200).json({content: {participantsCount: participantsCount, responsesCount: responsesCount}})
     } catch (err) {
-        console.log(err)
+        console.error(err)
         res.status(500).json(err)
     }
 }

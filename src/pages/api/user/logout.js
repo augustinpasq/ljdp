@@ -7,6 +7,7 @@ async function logout(req, res) {
         req.session.destroy()
         res.status(200).json({content: {}})
     } catch (err) {
+        console.error(err)
         res.status(500).json(err)
     }
 }

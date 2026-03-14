@@ -21,7 +21,11 @@ async function register(req, res) {
 
         res.status(200).json({success: true, content: response})
     } catch (err) {
-        if (err.code === "P2002") res.status(200).json({success: false, content: err})
-        else res.status(500).json(err)
+        if (err.code === "P2002") {
+            res.status(200).json({success: false, content: err})
+        } else {
+            console.error(err)
+            res.status(500).json(err)
+        } 
     }
 }

@@ -33,6 +33,7 @@ export default async function updateParticipant(req, res) {
 
         res.status(200).json({content: result})
     } catch (err) {
+        console.error(err)
         res.status(500).json(err)
     }
 }

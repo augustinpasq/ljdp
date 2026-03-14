@@ -40,6 +40,7 @@ export default async function addParticipant(req, res) {
 
         res.status(200).json({content: {message: message, games: getGames(req, res)}})
     } catch (err) {
+        console.error(err)
         res.status(500).json(err)
     }
 }

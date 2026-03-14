@@ -30,6 +30,7 @@ async function getCategories(req, res) {
 
         res.status(code).json({content: result})
     } catch (err) {
+        console.error(err)
         res.status(500).json(err)
     }
 }

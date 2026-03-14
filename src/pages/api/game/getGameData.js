@@ -81,6 +81,7 @@ export default async function getGameData(req, res) {
 
         res.status(200).json({content: gameData})
     } catch (err) {
+        console.error(err)
         res.status(500).json(err)
     }
 }

@@ -10,6 +10,7 @@ export default async function deleteCategory(req, res) {
 
         res.status(200).json({content: {}})
     } catch (err) {
+        console.error(err)
         res.status(500).json(err)
     }
 }

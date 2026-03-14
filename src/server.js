@@ -4,6 +4,15 @@ const next = require("next")
 const path = require("path")
 const socketIO = require("socket.io")
 
+process.on("uncaughtException", (err) => {
+    console.error("Uncaught Exception:", err)
+    process.exit(1)
+})
+
+process.on("unhandledRejection", (err) => {
+    console.error("Unhandled Rejection:", err)
+})
+
 const dev = process.env.NODE_ENV !== "production"
 const hostname = "localhost"
 const port = 3001

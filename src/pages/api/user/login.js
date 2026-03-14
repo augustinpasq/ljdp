@@ -24,6 +24,7 @@ async function login(req, res) {
 
         res.status(200).json({success: response, content: {}})
     } catch (err) {
+        console.error(err)
         res.status(500).json(err)
     }
 }

@@ -14,6 +14,7 @@ export default async function addCategory(req, res) {
 
         res.status(200).json({content: response})
     } catch (err) {
+        console.error(err)
         res.status(500).json(err)
     }
 }

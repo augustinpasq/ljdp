@@ -13,6 +13,7 @@ export default async function setStatus(req, res) {
 
         res.status(200).json({})
     } catch (err) {
+        console.error(err)
         res.status(500).json(err)
     }
 }
