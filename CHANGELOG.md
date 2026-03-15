@@ -1,3 +1,10 @@
+## [1.5.1](https://github.com/augustinpasq/ljdp/compare/v1.5.0...v1.5.1) (2026-03-15)
+
+
+### Bug Fixes
+
+* **ci:** fix webhook call ([40664e5](https://github.com/augustinpasq/ljdp/commit/40664e58bb6068abab9b21bc4cb5f24e5260af5c))
+
 # [1.5.0](https://github.com/augustinpasq/ljdp/compare/v1.4.0...v1.5.0) (2026-03-14)
 
 
