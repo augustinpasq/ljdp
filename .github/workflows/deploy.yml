@@ -119,13 +119,14 @@ jobs:
     steps:
       - name: Trigger Dokploy deployment
         run: |
+          jq -n \
+            --arg id "${{ github.event.head_commit.id }}" \
+            --arg message "${{ github.event.head_commit.message }}" \
+            '{
+              ref: "main",
+              head_commit: { id: $id, message: $message }
+            }' | \
           curl -X POST "${{ secrets.DOKPLOY_WEBHOOK_URL }}" \
-            -H 'Content-Type: application/json' \
+            -H "Content-Type: application/json" \
             -H "X-GitHub-Event: push" \
-            -d '{
-              "ref": "main",
-              "head_commit": {
-                "id": "${{ github.event.head_commit.id }}",
-                "message": "${{ github.event.head_commit.message }}"
-              }
-            }'
+            -d @-
