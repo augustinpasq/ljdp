@@ -1,3 +1,10 @@
+## [1.5.3](https://github.com/augustinpasq/ljdp/compare/v1.5.2...v1.5.3) (2026-03-19)
+
+
+### Bug Fixes
+
+* **ci:** streamline Dokploy webhook payload generation ([a379ec9](https://github.com/augustinpasq/ljdp/commit/a379ec9ab9151a1e7c61ede3b9d2d2cc2f167431))
+
 ## [1.5.2](https://github.com/augustinpasq/ljdp/compare/v1.5.1...v1.5.2) (2026-03-16)
 
 

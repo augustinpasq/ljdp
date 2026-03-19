@@ -14,7 +14,7 @@ services:
       COOKIE_PASSWORD: ${COOKIE_PASSWORD}
       DATABASE_URL: ${DATABASE_URL}
       NODE_ENV: production
-    image: ghcr.io/augustinpasq/ljdp-app:1.5.2
+    image: ghcr.io/augustinpasq/ljdp-app:1.5.3
     networks:
       - ljdp
     volumes:
@@ -28,7 +28,7 @@ services:
       MYSQL_PASSWORD: ${DATABASE_PASSWORD}
       MYSQL_USER: ${DATABASE_USER}
       MYSQL_ROOT_PASSWORD: ${DATABASE_ROOT_PASSWORD}
-    image: ghcr.io/augustinpasq/ljdp-db:1.5.2
+    image: ghcr.io/augustinpasq/ljdp-db:1.5.3
     networks:
       - ljdp
     volumes:
