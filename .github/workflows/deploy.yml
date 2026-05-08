@@ -1,4 +1,4 @@
-name: Deploy
+name: Release
 
 on:
   push:
@@ -111,22 +111,3 @@ jobs:
             docker tag  ${FULL}:latest ${FULL}:${VERSION}
             docker push ${FULL}:${VERSION}
           done
-
-  deploy:
-    needs: tag
-    if: needs.release.outputs.published == 'true'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Trigger Dokploy deployment
-        run: |
-          jq -n \
-            --arg id "${{ github.event.head_commit.id }}" \
-            --arg message "${{ github.event.head_commit.message }}" \
-            '{
-              ref: "main",
-              head_commit: { id: $id, message: $message }
-            }' | \
-          curl -X POST "${{ secrets.DOKPLOY_WEBHOOK_URL }}" \
-            -H "Content-Type: application/json" \
-            -H "X-GitHub-Event: push" \
-            -d @-
