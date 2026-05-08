@@ -1,3 +1,10 @@
+## [1.5.4](https://github.com/augustinpasq/ljdp/compare/v1.5.3...v1.5.4) (2026-05-08)
+
+
+### Bug Fixes
+
+* **ci:** remove dokploy deployment ([a1b2003](https://github.com/augustinpasq/ljdp/commit/a1b2003327aebf0f270a4feb3e342017528fbe8d))
+
 ## [1.5.3](https://github.com/augustinpasq/ljdp/compare/v1.5.2...v1.5.3) (2026-03-19)
 
 
